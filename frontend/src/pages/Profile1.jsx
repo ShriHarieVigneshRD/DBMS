@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
+import pictureProfile from '../assets/profile.png';
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
@@ -24,8 +25,7 @@ const Profile = () => {
       }
       setUserId(storedId);
 
-      const res = await axios.post('http://localhost:3000/user/profile', { user_id: storedId });
-
+      const res = await axios.post('https://stock-backend-production-1815.up.railway.app/user/profile', { user_id: storedId });
       setProfile(res.data);
     } catch (err) {
       console.error(err);
@@ -35,7 +35,7 @@ const Profile = () => {
 
   const handleUsernameUpdate = async () => {
     try {
-      const res = await axios.put('http://localhost:3000/user/update-username', {
+      const res = await axios.put('https://stock-backend-production-1815.up.railway.app/user/update-username', {
         user_id: userId,
         newUsername,
       });
@@ -49,7 +49,7 @@ const Profile = () => {
 
   const handlePasswordUpdate = async () => {
     try {
-      const res = await axios.put('http://localhost:3000/user/update-password', {
+      const res = await axios.put('https://stock-backend-production-1815.up.railway.app/user/update-password', {
         user_id: userId,
         currentPassword,
         newPassword,
@@ -62,88 +62,80 @@ const Profile = () => {
     }
   };
 
-  const handleAccountDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete your account?')) return;
-
-    try {
-      const res = await axios.delete('http://localhost:3000/user/delete-account', {
-        data: { user_id: userId },
-      });
-      toast.success(res.data.message);
-      localStorage.clear();
-      setTimeout(() => navigate('/'), 2000);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error deleting account');
-    }
-  };
-
   useEffect(() => {
     fetchProfile();
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-100">
       <ToastContainer />
       <Navbar />
-      <main className="pt-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl font-bold text-gray-800 mb-6">Your Profile</h1>
-          <p className="text-lg text-gray-600 mb-10">Welcome back, {profile.username}!</p>
+      <main className="pt-21 px-4">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Left Column */}
+          <div className="flex flex-col items-start space-y-0 border-r pr-8">
+        
 
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Email: {profile.email}</h2>
-            <h2 className="text-xl font-semibold mb-2">Username: {profile.username}</h2>
+
+
+
+            {/* Rectangular Image Placeholder */}
+            <div className="w-full h-100 bg-gray-300 mt-1 flex items-center justify-center text-gray-500 text-sm rounded-md shadow-inner">
+              <img src={pictureProfile} alt="Profile" className="w-full h-full object-cover rounded-md" />
+            </div>
           </div>
 
-          {/* Update Username */}
-          <div className="mb-8">
-            <input
-              type="text"
-              placeholder="New Username"
-              value={newUsername}
-              onChange={(e) => setNewUsername(e.target.value)}
-              className="border rounded px-4 py-2 mr-2"
-            />
-            <button
-              onClick={handleUsernameUpdate}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Update Username
-            </button>
-          </div>
+          {/* Right Column */}
+          <div className="flex flex-col justify-center space-y-2">
+            {/* Username Update */}
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-2 text-left">Profile</h2>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-black-700 text-base-2xl font-bond">
+              <p><span className="font-semibold">Email:</span> {profile.email}</p>
+              <p><span className="font-semibold">Username:</span> {profile.username}</p>
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">New Username</label>
+              <input
+                type="text"
+                placeholder="Enter new username"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                className="border w-full rounded px-4 py-2"
+              />
+              <button
+                onClick={handleUsernameUpdate}
+                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Update Username
+              </button>
+            </div>
 
-          {/* Update Password */}
-          <div className="mb-8">
-            <input
-              type="password"
-              placeholder="Current Password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="border rounded px-4 py-2 mr-2"
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="border rounded px-4 py-2 mr-2"
-            />
-            <button
-              onClick={handlePasswordUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Update Password
-            </button>
-          </div>
+            {/* Password Update */}
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Current Password</label>
+              <input
+                type="password"
+                placeholder="Current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="border w-full rounded px-4 py-2 mb-2"
+              />
+              <label className="block mb-2 text-sm font-medium text-gray-700">New Password</label>
+              <input
+                type="password"
+                placeholder="New password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="border w-full rounded px-4 py-2"
+              />
+              <button
+                onClick={handlePasswordUpdate}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Update Password
+              </button>
+            </div>
 
-          {/* Delete Account */}
-          <div className="mb-8">
-            <button
-              onClick={handleAccountDelete}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Delete Account
-            </button>
           </div>
         </div>
       </main>

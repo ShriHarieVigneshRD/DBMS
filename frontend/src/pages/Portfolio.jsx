@@ -116,7 +116,7 @@ const Portfolio = () => {
                 <tbody>
                   {portfolio.length > 0 ? (
                     portfolio.map((asset, index) => (
-                      <AssetRow key={asset.id || `asset-${index}`} asset={asset} index={index} />
+                      <AssetRow key={asset.id || `asset-${index}`} asset={asset} index={index} refreshPortfolio={displayPortfolio} />
                     ))
                   ) : (
                     <tr>
@@ -135,7 +135,7 @@ const Portfolio = () => {
   );
 };
 
-const AssetRow = ({ asset, index }) => {
+const AssetRow = ({ asset, index, refreshPortfolio }) => {
   const { currency, isError, isLoading, coin } = useFetchDetails(asset.symbol);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -177,6 +177,7 @@ const AssetRow = ({ asset, index }) => {
         toast.success("Purchase successful!");
         setIsModalOpen(false);
         setQuantity(1);
+        await refreshPortfolio(); // ✅ Refresh
       } else {
         toast.error("Purchase failed. Try again.");
       }
@@ -192,12 +193,12 @@ const AssetRow = ({ asset, index }) => {
       toast.error("Quantity must be greater than zero!");
       return;
     }
-  
+
     if (sellQuantity > asset.quantity) {
       toast.error("You cannot sell more than you own!");
       return;
     }
-  
+
     setIsProcessing(true);
     try {
       const response = await axios.post("https://stock-backend-production-1815.up.railway.app/portfolio/sell", {
@@ -206,11 +207,12 @@ const AssetRow = ({ asset, index }) => {
         quantity: sellQuantity,
         price: currentPrice,
       });
-  
+
       if (response.status === 200) {
         toast.success("Sell successful!");
         setIsSellModalOpen(false);
         setSellQuantity(1);
+        await refreshPortfolio(); // ✅ Refresh
       } else {
         toast.error("Sell failed. Try again.");
       }
@@ -220,7 +222,6 @@ const AssetRow = ({ asset, index }) => {
     }
     setIsProcessing(false);
   };
-  
 
   return (
     <>
@@ -251,89 +252,77 @@ const AssetRow = ({ asset, index }) => {
       </tr>
 
       {isModalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg w-96">
-          <h2 className="text-lg font-semibold mb-4">Confirm Purchase</h2>
-          <div className="flex items-center mb-4">
-            <img src={coin?.image?.large} alt={asset.name} className="w-10 h-10 mr-2" />
-            <span>{asset.name}</span>
-          </div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Enter Quantity:
-          </label>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          
-          <div className="flex justify-end mt-4">
-            <button 
-              onClick={() => setIsModalOpen(false)} 
-              className="px-3 py-1 bg-gray-400 text-white rounded-md mr-2"
-            >
-              Cancel
-            </button>
-
-            <button 
-              onClick={handleConfirmPurchase} 
-              disabled={isProcessing || quantity < 1} 
-              className={`px-3 py-1 rounded-md ${isProcessing || quantity < 1 ? "bg-gray-300 cursor-not-allowed" : "bg-green-500 hover:bg-green-600 text-white"}`}
-            >
-              {isProcessing ? "Processing..." : "Confirm Buy"}
-            </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Confirm Purchase</h2>
+            <div className="flex items-center mb-4">
+              <img src={coin?.image?.large} alt={asset.name} className="w-10 h-10 mr-2" />
+              <span>{asset.name}</span>
+            </div>
+            <label className="block text-gray-700 font-medium mb-2">Enter Quantity:</label>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div className="flex justify-end mt-4">
+              <button onClick={() => setIsModalOpen(false)} className="px-3 py-1 bg-gray-400 text-white rounded-md mr-2">
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmPurchase}
+                disabled={isProcessing || quantity < 1}
+                className={`px-3 py-1 rounded-md ${isProcessing || quantity < 1 ? "bg-gray-300 cursor-not-allowed" : "bg-green-500 hover:bg-green-600 text-white"}`}
+              >
+                {isProcessing ? "Processing..." : "Confirm Buy"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-
-{isSellModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg w-96">
-      <h2 className="text-lg font-semibold mb-4">Confirm Sell</h2>
-      <div className="flex items-center mb-4">
-            <img src={coin?.image?.large} alt={asset.name} className="w-10 h-10 mr-2" />
-            <span>{asset.name}</span>
-      </div>
-      <label className="block text-gray-700 font-medium mb-2">Enter Quantity:</label>
-      <input
-        type="number"
-        min="1"
-        max={asset.quantity} // Prevents input from exceeding available quantity
-        value={sellQuantity}
-        onChange={(e) => setSellQuantity(parseInt(e.target.value) || 1)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-
-      {/* Show Error Message if Quantity is Invalid */}
-      {sellQuantity > asset.quantity && (
-        <p className="text-red-600 text-sm mt-1">Cannot sell more than owned quantity ({asset.quantity.toFixed(8)})</p>
       )}
 
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={() => setIsSellModalOpen(false)}
-          className="px-3 py-1 bg-gray-400 text-white rounded-md mr-2"
-        >
-          Cancel
-        </button>
-
-        <button
-          onClick={handleConfirmSell}
-          disabled={isProcessing || sellQuantity < 1 || sellQuantity > asset.quantity}
-          className={`px-3 py-1 rounded-md ${isProcessing || sellQuantity < 1 || sellQuantity > asset.quantity 
-            ? "bg-gray-300 cursor-not-allowed" 
-            : "bg-red-500 hover:bg-red-600 text-white"}`}
-        >
-          {isProcessing ? "Processing..." : "Confirm Sell"}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {isSellModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Confirm Sell</h2>
+            <div className="flex items-center mb-4">
+              <img src={coin?.image?.large} alt={asset.name} className="w-10 h-10 mr-2" />
+              <span>{asset.name}</span>
+            </div>
+            <label className="block text-gray-700 font-medium mb-2">Enter Quantity:</label>
+            <input
+              type="number"
+              min="1"
+              max={asset.quantity}
+              value={sellQuantity}
+              onChange={(e) => setSellQuantity(parseInt(e.target.value) || 1)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {sellQuantity > asset.quantity && (
+              <p className="text-red-600 text-sm mt-1">Cannot sell more than owned quantity ({asset.quantity.toFixed(8)})</p>
+            )}
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsSellModalOpen(false)}
+                className="px-3 py-1 bg-gray-400 text-white rounded-md mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSell}
+                disabled={isProcessing || sellQuantity < 1 || sellQuantity > asset.quantity}
+                className={`px-3 py-1 rounded-md ${isProcessing || sellQuantity < 1 || sellQuantity > asset.quantity
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-red-500 hover:bg-red-600 text-white"}`}
+              >
+                {isProcessing ? "Processing..." : "Confirm Sell"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
