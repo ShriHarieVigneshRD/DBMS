@@ -11,7 +11,7 @@ function Navbar() {
     const handleLogout = async () => {
       try {
           const token = localStorage.getItem('token');
-          await axios.post('https://stock-backend-production-1815.up.railway.app/auth/logout', {}, {
+          await axios.post('https://usually-promoted-panda.ngrok-free.app/auth/logout', {}, {
               headers: { "Authorization": `Bearer ${token}` }
           });
 
