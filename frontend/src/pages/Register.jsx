@@ -20,7 +20,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://stock-backend-production-1815.up.railway.app/auth/register', values);
+            const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/auth/register', values);
             if (response.status === 201) {
                 toast.success('Registration successful!');
                 setTimeout(() => {

@@ -20,7 +20,9 @@ function Card({
     <div className={`${baseClasses} ${bgClasses} cursor-pointer`} onClick={onClick}>
       <div className="flex items-center justify-between mb-4">
         {/* Image on the left */}
-        <img src={imgLogo} alt={title} className="h-8 w-8 object-contain" />
+        {imgLogo ? (
+          <img src={imgLogo} alt={title} className="h-8 w-8 object-contain" />
+        ) : null}
 
         {/* Title and subtitle in center */}
         <div className="flex-1 text-center">

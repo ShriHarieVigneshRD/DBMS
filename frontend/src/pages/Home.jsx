@@ -13,12 +13,12 @@ const Home = () => {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://stock-backend-production-1815.up.railway.app/auth/home', {
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/home', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         navigate('/login');
       }
     } catch (err) {
@@ -26,6 +26,34 @@ const Home = () => {
       console.log(err);
     }
   };
+  
+  /*const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log("No token found in localStorage");
+        navigate('/login');
+        return;
+      }
+  
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/home', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      console.log("User fetched successfully:", response.data);
+  
+    } catch (err) {
+      console.error("Error fetching user:", err);
+      if (err.response) {
+        console.error("Status code:", err.response.status);
+        console.error("Backend message:", err.response.data);
+      }
+      navigate('/login');
+    }
+  };*/
+  
 
   useEffect(() => {
     fetchUser();
@@ -77,7 +105,7 @@ const Home = () => {
               <Card
                 title="Bitcoin"
                 subtitle="BTC"
-                imgLogo={bitcoin.isLoading ? "" : bitcoin.coin?.image?.large}
+                imgLogo={bitcoin.isLoading ? null : bitcoin.coin?.image?.large}
                 value={bitcoin.isLoading ? "Loading..." : `$${bitcoin.coin?.market_data?.current_price?.usd}`}
                 change={bitcoin.isLoading ? "..." : `${bitcoin.coin?.market_data?.price_change_24h?.toFixed(2)}`}
                 icon={getIcon(bitcoin.coin?.market_data?.price_change_percentage_24h)}
@@ -92,7 +120,7 @@ const Home = () => {
               <Card
                 title="Ethereum"
                 subtitle="ETH"
-                imgLogo={bitcoin.isLoading ? "" : ethereum.coin?.image?.large}
+                imgLogo={ethereum.isLoading ? null : ethereum.coin?.image?.large}
                 value={ethereum.isLoading ? "Loading..." : `$${ethereum.coin?.market_data?.current_price?.usd}`}
                 change={ethereum.isLoading ? "..." : `${ethereum.coin?.market_data?.price_change_24h?.toFixed(2)}`}
                 icon={getIcon(ethereum.coin?.market_data?.price_change_percentage_24h)}
@@ -107,7 +135,7 @@ const Home = () => {
               <Card
                 title="Tether"
                 subtitle="USDT"
-                imgLogo={bitcoin.isLoading ? "" : tether.coin?.image?.large}
+                imgLogo={tether.isLoading ? null : tether.coin?.image?.large}
                 value={tether.isLoading ? "Loading..." : `$${tether.coin?.market_data?.current_price?.usd}`}
                 change={tether.isLoading ? "..." : `${tether.coin?.market_data?.price_change_24h?.toFixed(2)}`}
                 icon={getIcon(tether.coin?.market_data?.price_change_percentage_24h)}
@@ -122,7 +150,7 @@ const Home = () => {
               <Card
                 title="XRP"
                 subtitle="XRP"
-                imgLogo={bitcoin.isLoading ? "" : xrp.coin?.image?.large}
+                imgLogo={xrp.isLoading ? null : xrp.coin?.image?.large}
                 value={xrp.isLoading ? "Loading..." : `$${xrp.coin?.market_data?.current_price?.usd}`}
                 change={xrp.isLoading ? "..." : `${xrp.coin?.market_data?.price_change_24h?.toFixed(2)}`}
                 icon={getIcon(xrp.coin?.market_data?.price_change_percentage_24h)}

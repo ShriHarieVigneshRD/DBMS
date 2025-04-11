@@ -25,7 +25,7 @@ const Profile = () => {
       }
       setUserId(storedId);
 
-      const res = await axios.post('https://stock-backend-production-1815.up.railway.app/user/profile', { user_id: storedId });
+      const res = await axios.post('https://usually-promoted-panda.ngrok-free.app/user/profile', { user_id: storedId });
       setProfile(res.data);
     } catch (err) {
       console.error(err);
@@ -35,7 +35,7 @@ const Profile = () => {
 
   const handleUsernameUpdate = async () => {
     try {
-      const res = await axios.put('https://stock-backend-production-1815.up.railway.app/user/update-username', {
+      const res = await axios.put('https://usually-promoted-panda.ngrok-free.app/user/update-username', {
         user_id: userId,
         newUsername,
       });
@@ -49,7 +49,7 @@ const Profile = () => {
 
   const handlePasswordUpdate = async () => {
     try {
-      const res = await axios.put('https://stock-backend-production-1815.up.railway.app/user/update-password', {
+      const res = await axios.put('https://usually-promoted-panda.ngrok-free.app/user/update-password', {
         user_id: userId,
         currentPassword,
         newPassword,

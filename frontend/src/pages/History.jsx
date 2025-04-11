@@ -17,11 +17,11 @@ const History = () => {
         return false;
       }
 
-      const response = await axios.get('https://stock-backend-production-1815.up.railway.app/auth/history', {
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/history', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         navigate('/login');
         return false;
       }
@@ -46,7 +46,7 @@ const History = () => {
       }
 
       const response = await axios.post(
-        'https://stock-backend-production-1815.up.railway.app/portfolio/transactions',
+        'https://usually-promoted-panda.ngrok-free.app/portfolio/transactions',
         { user_id: userId, sort, filter },
         { headers: { Authorization: `Bearer ${token}` } }
       );

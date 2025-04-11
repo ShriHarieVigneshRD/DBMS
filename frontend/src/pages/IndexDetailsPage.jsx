@@ -23,7 +23,7 @@ const IndexDetailsPage = () => {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://stock-backend-production-1815.up.railway.app/auth/details/${indexId}`, {
+      const response = await axios.get(`https://usually-promoted-panda.ngrok-free.app/auth/details/${indexId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,7 +63,7 @@ const IndexDetailsPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://stock-backend-production-1815.up.railway.app/portfolio/buy', {
+      const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/portfolio/buy', {
         user_id: localStorage.getItem("userId"),
         asset_symbol: indexId,
         asset_name: coin.name,
@@ -88,7 +88,7 @@ const IndexDetailsPage = () => {
 
   const handleWatchListClick = async () => {
     try {
-      const response = await axios.post('https://stock-backend-production-1815.up.railway.app/watchlist/add', {
+      const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/watchlist/add', {
         user_id: localStorage.getItem("userId"),
         asset_symbol: indexId,
         asset_name: coin.name,

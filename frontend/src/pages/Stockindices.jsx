@@ -10,13 +10,13 @@ const Stockindices = () => {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://stock-backend-production-1815.up.railway.app/auth/stockindices', {
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/stockindices', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       });
 
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         navigate('/login');
       }
     } catch (err) {

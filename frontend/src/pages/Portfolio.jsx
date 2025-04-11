@@ -19,11 +19,11 @@ const Portfolio = () => {
         return false;
       }
 
-      const response = await axios.get('https://stock-backend-production-1815.up.railway.app/auth/portfolio', {
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/portfolio', {
         headers: { "Authorization": `Bearer ${token}` }
       });
 
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         navigate('/login');
         return false;
       }
@@ -48,7 +48,7 @@ const Portfolio = () => {
         return;
       }
 
-      const response = await axios.post('https://stock-backend-production-1815.up.railway.app/portfolio/getStocks', {
+      const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/portfolio/getStocks', {
         user_id: userId
       }, {
         headers: { "Authorization": `Bearer ${token}` }
@@ -165,7 +165,7 @@ const AssetRow = ({ asset, index, refreshPortfolio }) => {
 
     setIsProcessing(true);
     try {
-      const response = await axios.post("https://stock-backend-production-1815.up.railway.app/portfolio/buy", {
+      const response = await axios.post("https://usually-promoted-panda.ngrok-free.app/portfolio/buy", {
         user_id: localStorage.getItem("userId"),
         asset_symbol: asset.symbol,
         asset_name: asset.name,
@@ -201,7 +201,7 @@ const AssetRow = ({ asset, index, refreshPortfolio }) => {
 
     setIsProcessing(true);
     try {
-      const response = await axios.post("https://stock-backend-production-1815.up.railway.app/portfolio/sell", {
+      const response = await axios.post("https://usually-promoted-panda.ngrok-free.app/portfolio/sell", {
         user_id: localStorage.getItem("userId"),
         asset_symbol: asset.symbol,
         quantity: sellQuantity,

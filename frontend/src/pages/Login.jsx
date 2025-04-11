@@ -19,7 +19,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://stock-backend-production-1815.up.railway.app/auth/login', values);
+            const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/auth/login', values);
             if (response.status === 201) {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userId', response.data.id);

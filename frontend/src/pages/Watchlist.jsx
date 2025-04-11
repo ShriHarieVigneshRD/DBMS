@@ -15,13 +15,13 @@ const Watchlist = () => {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://stock-backend-production-1815.up.railway.app/auth/watchlist', {
+      const response = await axios.get('https://usually-promoted-panda.ngrok-free.app/auth/watchlist', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       });
 
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         navigate('/login');
         return false;
       }
@@ -46,7 +46,7 @@ const Watchlist = () => {
         return;
       }
 
-      const response = await axios.post('https://stock-backend-production-1815.up.railway.app/watchlist/get', {
+      const response = await axios.post('https://usually-promoted-panda.ngrok-free.app/watchlist/get', {
         user_id: userId
       }, {
         headers: { "Authorization": `Bearer ${token}` }
@@ -149,7 +149,7 @@ const AssetRow = ({ asset, index, refreshWatchlist }) => {
   const handleConfirmRemove = async () => {
     setIsProcessing(true);
     try {
-      const response = await axios.post("https://stock-backend-production-1815.up.railway.app/watchlist/delete", {
+      const response = await axios.post("https://usually-promoted-panda.ngrok-free.app/watchlist/delete", {
         user_id: localStorage.getItem("userId"),
         asset_symbol: asset.symbol,
       });
