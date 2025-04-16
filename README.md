@@ -60,7 +60,7 @@ Simulate cryptocurrency trading with real-time market prices.
 
 - *Frontend:* React.js  
 - *Backend:* Node.js with Express  
-- *Database:* MySQL (AWS RDS)  
+- *Database:* MySQL (Clever Cloud)  
 - *Authentication:* JSON Web Tokens (JWT)  
 - *Hosting:* Vercel (Frontend), Railway (Backend)
 
